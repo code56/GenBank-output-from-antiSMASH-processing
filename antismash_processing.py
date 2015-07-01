@@ -31,10 +31,7 @@ def geneProcess(inputFilename,outputFilename, outputFilename2, ideal_GC_usage, i
     from Bio.SeqUtils import GC
     import sys
     import argparse
-    import tables
     import numpy
-    import cmath
-    import math
     import operator
     import re
     from operator import itemgetter
