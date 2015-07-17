@@ -1,0 +1,64 @@
+SynPrio pipeline User Contributed Python Documentation
+
+Evanthia Kaimaklioti 
+
+sample usage: python SynPrio1.py -inputfile NC_003888.gbk -gcu [options] -wgc [options] -wl [options] -wcu [options] -il [options] -wil [options] -mgb_inputfile [option] -mgb_score [option] -wms [option] -whc [option] -wtx [option]
+
+	where: * in front of the weight values sort the corresponding feature by the descending order. 
+	
+
+DESCRIPTION
+
+	Aims: This Python script is designed to manipulate the output of antiSMASH and MultiGeneBlast software. For the antiSMASH is the predicted secondary metabolism biosynthetic gene clusters and for the MultiGeneBlast is TXT files. All cluster files should be placed in the same directory and segregated under the appropriate folder (accession number of the genome used to run antiSMASH, to keep antiSMASH output files; and any other folder name given to the folder to store the MGB TXT files):
+
+The antiSMASH output file computations and results are the following: 
+
+1.	Extract the feature name and qualifiers for each CDS in the cluster file
+2.	Computes the total number of codons in the cluster
+3.	Computes the length of each CDS in the cluster
+4.	Finds the GC content of each sequence 
+5.	Finds the sequence that is longest (largest number of nucleotides)
+6.	Computes the totat GC content for all of the sequences in the luster-given as a percentage (%)
+7.	Computes the distance (difference) of the cluster's GC content from the user-defined ideal GC content value
+8.	Constructs a synonymous codon usage (SCU)for the entire cluster
+9.	Calculates the total absolute SCU difference of the cluster from the E.coli SCU
+10.	computes the distance of the largest sequence in length of the cluster with the ideal largest length value defined by the user. 
+11.	Returns the values necessary to build in the main program the SCU distance dictionary, the largest sequence length, the size distance, the GC content difference from the ideal GC content
+
+
+The MultiGeneBlast output file computations and results are the following: 
+
+1. Check if each cluster hit has a MGB score above the user-defined option.
+2. if a hit does fulfill the criterion above, (2.1.) then add its MGB to the total MGB score for the cluster and (2.2.) add one to the number of hits counting the total number of hits with a MGB score higher than the user-defined for the entire cluster.(2.3)compute the taxonomic distance of this hit with the first hit in the cluster. 
+3. If the cluster does not have any hit with a MGB score about the threshold then 3.1. puts 0 for the total MGB score, 0 for the total counts hit and 100 for the taxonomy distance. 
+4. Returns these three computations to the SynPrio pipeline to compute the appropriate dictionaries for these three features there. 
+
+
+The SynPrio Main program performs the following tasks: 
+
+1. Parses the user defined options for the antiSMASH_processing.py and the MGB_processing.py. 
+2. Receives the clusters features and construct the dictionries for the seven features (GC usage distance, absolute SCU distance, length distance,sorting by the largest sequence length, total MGB score, count of hits with a MGB score higher than threshold, total taxonomic distance of the significant hits in the cluster)
+3. Sorts the dictionaries according to how the user defined the order of the dictionary sorting (with/out star)
+4. Computes the absolute weight means of ranks score (WMRS) for all of the features and returns the list in ascending order of the ranking of the clusters. The absolute WMRS = (w1*a + w2*b)/w1+w2, where “a” and “b” correspond to the rank each cluster had for each feature. 
+
+
+OPTIONS AND ARGUMENTS
+	 -* in front of any weight for any feature, denotes that the dictionary holding the distance of the feature from the user-defined value, needs to be sorted in descending order. 
+	-inputfile : The name of the folder holding the antiSMASH output files
+	-gcu: the ideal GC usage value
+	-wgc: the weight assigned to the GC usage distance dictionary
+	-wl: the weight for ranking according to the lengthiest sequence in the cluster
+	-wil: the weight for the ranking according to the length distance 
+	-wcu: the weight assigned to the absolute total distance from the SCU of the E.coli
+	-il: the ideal length for the lengthiest sequence in the cluster
+	-wil: weight for the distance from the ideal length for the lengthiest sequence 
+	-mgb_inputfile: the name of the folder that contains the MultiGeneBlast output TXT files
+	-mgb_score: the MGB score threshold against which all cluster hits will be compared to. 
+	-wms: the weight assigned to ranking the clusters according to the total MGB score of the cluster ( = sum of the MGB scores of the hits that each had a MGB score above threshold). 
+	-whc: the weight assigned for the total number of hits that each had a MGB score above the user-defined threshold. 
+	-wtx: the weight for the absolute total taxonomic distance of all the hits in the cluster that had a MGB score above the user-defined. The taxonomic distance is taken from comparing the taxonomic information of the first cluster hit and each subsequent hit. 
+
+Note: in the case where the user applies a non-appropriate user option, the SynPrio pipeline returns an error message and a help message (automatically set as SynPrio uses the argparse module)to guide the user to enter the correct CLA. 
+
+
+ 
